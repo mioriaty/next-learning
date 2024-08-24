@@ -124,7 +124,6 @@ export const reducer = (state: State, action: Action): State => {
   }
 };
 
-
 type ListenerParams = (state: State) => void;
 
 const listeners: Array<ListenerParams> = [];

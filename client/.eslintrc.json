@@ -43,7 +43,10 @@
     "comma-dangle": 1,
     "comma-spacing": 1,
     "arrow-spacing": 1,
-    "semi": ["warn", "always"]
+    "semi": ["warn", "always"],
+    "@typescript-eslint/no-empty-object-type": {
+      "allowWithName": "Props$"
+    }
   },
   "ignorePatterns": ["node_modules/", "dist/"]
 }
