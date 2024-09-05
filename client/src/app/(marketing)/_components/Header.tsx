@@ -14,10 +14,22 @@ import {
   NavigationMenuTrigger
 } from '@/shared/components/ui/navigation-menu';
 
-import LoginButton from '@/app/(marketing)/_components/LoginButton';
-import RegisterButton from '@/app/(marketing)/_components/RegisterButton';
+import { ModeToggle } from '@/shared/components/dark-mode-toggle';
 
-const navigationItems = [
+import LoginButton from '@/app/(marketing)/_components/login-button';
+import RegisterButton from '@/app/(marketing)/_components/register-button';
+
+interface NavigationItem {
+  title: string;
+  href?: string;
+  description?: string;
+  items?: {
+    title: string;
+    href: string;
+  }[];
+}
+
+const navigationItems: NavigationItem[] = [
   {
     title: 'Home',
     href: '/',
@@ -27,47 +39,84 @@ const navigationItems = [
     title: 'Product',
     description: 'Managing a small business today is already tough.',
     items: [
-      {
-        title: 'Reports',
-        href: '/reports'
-      },
-      {
-        title: 'Statistics',
-        href: '/statistics'
-      },
-      {
-        title: 'Dashboards',
-        href: '/dashboards'
-      },
-      {
-        title: 'Recordings',
-        href: '/recordings'
-      }
+      { title: 'Reports', href: '/reports' },
+      { title: 'Statistics', href: '/statistics' },
+      { title: 'Dashboards', href: '/dashboards' },
+      { title: 'Recordings', href: '/recordings' }
     ]
   },
   {
     title: 'Company',
     description: 'Managing a small business today is already tough.',
     items: [
-      {
-        title: 'About us',
-        href: '/about'
-      },
-      {
-        title: 'Fundraising',
-        href: '/fundraising'
-      },
-      {
-        title: 'Investors',
-        href: '/investors'
-      },
-      {
-        title: 'Contact us',
-        href: '/contact'
-      }
+      { title: 'About us', href: '/about' },
+      { title: 'Fundraising', href: '/fundraising' },
+      { title: 'Investors', href: '/investors' },
+      { title: 'Contact us', href: '/contact' }
     ]
   }
 ];
+
+const NavigationMenuItemComponent = ({ item }: { item: NavigationItem }) => (
+  <NavigationMenuItem key={item.title}>
+    {item.href ? (
+      <NavigationMenuLink>
+        <Button variant="ghost">{item.title}</Button>
+      </NavigationMenuLink>
+    ) : (
+      <>
+        <NavigationMenuTrigger className="font-medium text-sm">{item.title}</NavigationMenuTrigger>
+        <NavigationMenuContent className="!w-[450px] p-4">
+          <div className="flex flex-col lg:grid grid-cols-2 gap-4">
+            <div className="flex flex-col h-full justify-between">
+              <div className="flex flex-col">
+                <p className="text-base">{item.title}</p>
+                <p className="text-muted-foreground text-sm">{item.description}</p>
+              </div>
+              <Button size="sm" className="mt-10">
+                Book a call today
+              </Button>
+            </div>
+            <div className="flex flex-col text-sm h-full justify-end">
+              {item.items?.map((subItem) => (
+                <NavigationMenuLink
+                  href={subItem.href}
+                  key={subItem.title}
+                  className="flex flex-row justify-between items-center hover:bg-muted py-2 px-4 rounded"
+                >
+                  <span>{subItem.title}</span>
+                  <MoveRight className="w-4 h-4 text-muted-foreground" />
+                </NavigationMenuLink>
+              ))}
+            </div>
+          </div>
+        </NavigationMenuContent>
+      </>
+    )}
+  </NavigationMenuItem>
+);
+
+const MobileNavigationItem = ({ item }: { item: NavigationItem }) => (
+  <div key={item.title}>
+    <div className="flex flex-col gap-2">
+      {item.href ? (
+        <Link href={item.href} className="flex justify-between items-center">
+          <span className="text-lg">{item.title}</span>
+          <MoveRight className="w-4 h-4 stroke-1 text-muted-foreground" />
+        </Link>
+      ) : (
+        <p className="text-lg">{item.title}</p>
+      )}
+      {item.items &&
+        item.items.map((subItem) => (
+          <Link key={subItem.title} href={subItem.href} className="flex justify-between items-center">
+            <span className="text-muted-foreground">{subItem.title}</span>
+            <MoveRight className="w-4 h-4 stroke-1" />
+          </Link>
+        ))}
+    </div>
+  </div>
+);
 
 export const Header = () => {
   const [isOpen, setOpen] = useState(false);
@@ -79,52 +128,16 @@ export const Header = () => {
           <NavigationMenu className="flex justify-start items-start">
             <NavigationMenuList className="flex justify-start gap-4 flex-row">
               {navigationItems.map((item) => (
-                <NavigationMenuItem key={item.title}>
-                  {item.href ? (
-                    <>
-                      <NavigationMenuLink>
-                        <Button variant="ghost">{item.title}</Button>
-                      </NavigationMenuLink>
-                    </>
-                  ) : (
-                    <>
-                      <NavigationMenuTrigger className="font-medium text-sm">{item.title}</NavigationMenuTrigger>
-                      <NavigationMenuContent className="!w-[450px] p-4">
-                        <div className="flex flex-col lg:grid grid-cols-2 gap-4">
-                          <div className="flex flex-col h-full justify-between">
-                            <div className="flex flex-col">
-                              <p className="text-base">{item.title}</p>
-                              <p className="text-muted-foreground text-sm">{item.description}</p>
-                            </div>
-                            <Button size="sm" className="mt-10">
-                              Book a call today
-                            </Button>
-                          </div>
-                          <div className="flex flex-col text-sm h-full justify-end">
-                            {item.items?.map((subItem) => (
-                              <NavigationMenuLink
-                                href={subItem.href}
-                                key={subItem.title}
-                                className="flex flex-row justify-between items-center hover:bg-muted py-2 px-4 rounded"
-                              >
-                                <span>{subItem.title}</span>
-                                <MoveRight className="w-4 h-4 text-muted-foreground" />
-                              </NavigationMenuLink>
-                            ))}
-                          </div>
-                        </div>
-                      </NavigationMenuContent>
-                    </>
-                  )}
-                </NavigationMenuItem>
+                <NavigationMenuItemComponent key={item.title} item={item} />
               ))}
             </NavigationMenuList>
           </NavigationMenu>
         </div>
         <div className="flex lg:justify-center">
-          <p className="font-semibold">Mioriaty</p>
+          <p className="font-semibold">Tomio</p>
         </div>
         <div className="flex justify-end w-full gap-4">
+          <ModeToggle />
           <RegisterButton />
           <LoginButton />
         </div>
@@ -135,25 +148,7 @@ export const Header = () => {
           {isOpen && (
             <div className="absolute top-20 border-t flex flex-col w-full right-0 bg-background shadow-lg py-4 container gap-8">
               {navigationItems.map((item) => (
-                <div key={item.title}>
-                  <div className="flex flex-col gap-2">
-                    {item.href ? (
-                      <Link href={item.href} className="flex justify-between items-center">
-                        <span className="text-lg">{item.title}</span>
-                        <MoveRight className="w-4 h-4 stroke-1 text-muted-foreground" />
-                      </Link>
-                    ) : (
-                      <p className="text-lg">{item.title}</p>
-                    )}
-                    {item.items &&
-                      item.items.map((subItem) => (
-                        <Link key={subItem.title} href={subItem.href} className="flex justify-between items-center">
-                          <span className="text-muted-foreground">{subItem.title}</span>
-                          <MoveRight className="w-4 h-4 stroke-1" />
-                        </Link>
-                      ))}
-                  </div>
-                </div>
+                <MobileNavigationItem key={item.title} item={item} />
               ))}
             </div>
           )}

@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { Header } from '@/app/(marketing)/_components/Header';
+import { Header } from '@/app/(marketing)/_components/header';
 
 type PageProps = object;
 

@@ -1,11 +1,12 @@
-import { cn } from '@/shared/utils/string';
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
+
+import { ThemeProvider } from '@/shared/components/theme-provider';
 
 import './globals.css';
 
 const inter = Inter({
-  subsets: ['latin'],
+  subsets: ['vietnamese'],
   variable: '--font-sans'
 });
 
@@ -20,8 +21,12 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body className={cn('min-h-screen bg-background font-sans antialiased', inter.variable)}>{children}</body>
+    <html lang="en" suppressContentEditableWarning>
+      <body className={`${inter.className}`}>
+        <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
+          {children}
+        </ThemeProvider>
+      </body>
     </html>
   );
 }

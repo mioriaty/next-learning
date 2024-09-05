@@ -117,6 +117,7 @@ export default async function authRoutes(fastify: FastifyInstance, options: Fast
       const { body } = request
       const { session, account } = await loginController(body)
       if (envConfig.COOKIE_MODE) {
+        console.log('session token', session.token)
         reply
           .setCookie('sessionToken', session.token, {
             path: '/',
